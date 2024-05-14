@@ -12,7 +12,6 @@ for _ in range(20):
 # 저장된 리스트 출력
 print(f"난수 생성 = {random_numbers}")
 # s 다음에 숫자를 가진 변수들을 생성하여 리스트에 저장하는 예제
-
 # 빈 리스트 생성 s1, s2, s3
 string_list = []
 # s 다음에 숫자를 가진 변수들 생성하여 리스트에 추가: s1, s2, s3 등을 생성 
@@ -27,12 +26,12 @@ students = string_list
 scores = random_numbers
 
 #students, scores로 구성된 딕셔너리를 만든다 
-score_dic = { 'student': string_list,
+score_dic = { 'students': string_list,
              'scores' : random_numbers}
 
 print(f"학번과 점수 딕셔너리={score_dic}")
 # 점수를 기준으로 내림차순으로 정렬한 튜플 리스트 생성
-sorted_scores = sorted(zip(score_dic['student'], score_dic['scores']), key=lambda x: x[1], reverse=True)
+sorted_scores = sorted(zip(score_dic['students'], score_dic['scores']), key=lambda x: x[1], reverse=True)
 # 정렬된 튜플 리스트를 다른 딕셔너리에 저장
 sorted_score_dic = {'sorted_scores' : sorted_scores}
 
