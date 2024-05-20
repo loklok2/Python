@@ -35,9 +35,13 @@ while True:                                 #게임루프
             raise SystemExit
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
+                if(len)
                 bullet_rect = pygame.rect.Rect(0,0,5,5)
                 bullet_rect.midbottom = ship_rect.midtop
                 bullets.append(bullet_rect)
+            elif event.key == pygame.K_q:
+                pygame.quit()
+                raise SystemExit
             elif event.key == pygame.K_RIGHT:
                right_pressed = True
             elif event.key == pygame.K_LEFT:
@@ -54,7 +58,8 @@ while True:                                 #게임루프
             elif event.key == pygame.K_UP:
                     up_pressed = False                      
             elif event.key == pygame.K_DOWN:
-                    down_pressed = False                      
+                    down_pressed = False
+        
             
     # Do logical updates here.
     # ...
@@ -74,13 +79,15 @@ while True:                                 #게임루프
         for bullet in bullets:
             bullet.y = bullet.y -10
 
+
+
     screen_surf.fill(("white"))  # Fill the display with a solid color #
 
-    # Render the graphics here.
+    # Render the graphics here. 
     screen_surf.blit(ship_img, ship_rect)
     screen_surf.blit(alien_img, alien_rect)
     if bullets:
         for bullet in bullets:
             pygame.draw.rect(screen_surf, 'red', bullet)
     pygame.display.flip()  # Refresh on-screen display
-    clock.tick(200)         # wait until next frame (at 60 FPS)
+    clock.tick(60)         # wait until next frame (at 60 FPS)
