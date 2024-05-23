@@ -6,5 +6,5 @@ favorite_languages = {
     }
 
 print("The following languages have been mentioned:")
-for language in set(favorite_languages.values()):
+for language in set(favorite_languages.values()): #set을 통한 중복제거
     print(language.title())
