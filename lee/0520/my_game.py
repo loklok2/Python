@@ -1,24 +1,12 @@
 import pygame
 
-ship_img = pygame.image.load('images/ship.bmp')
-alien_img = pygame.image.load('images/alien.bmp')
-
-
-#bullet_rect = None
-bullets = []
-
-left_pressed = False
-right_pressed = False
-alien_x_direction = 1 # False: -1, 1: right
-alien_x_direction_changed = False
-is_running = True
+pygame.init()
 
 def init():
     screen_surf = pygame.display.set_mode((1280,720))
     return screen_surf
 
 def create_ship(screen_surf):
-    #global screen_surf
     global ship_img
     ship_rect = ship_img.get_rect()
     ship_rect.midbottom = screen_surf.get_rect().midbottom
@@ -31,32 +19,23 @@ def create_aliens():
     alien_y_pos = alien_rect.height
 
     aliens = []
-    # for _ in range(10):
-    #     alien = pygame.rect.Rect(alien_x_pos, alien_y_pos,
-    #                         alien_rect.width,\
-    #                         alien_rect.height)
-    # alien_x_pos += alien_rect.width * 2
-    # aliens.append(alien)
-    # return aliens
-    for row in range(7):  
-        for column in range(10):  
-            alien = pygame.rect.Rect(alien_rect.width * 2 * column,  
-                                      alien_rect.height * 2 * row,  
-                                      alien_rect.width,
-                                      alien_rect.height)
-            aliens.append(alien)
-
+    for _ in range(10):
+        alien = pygame.rect.Rect(alien_x_pos, alien_y_pos,\
+                            alien_rect.width,\
+                            alien_rect.height)
+        alien_x_pos += alien_rect.width * 2
+        aliens.append(alien)
     return aliens
 
-def create_bullet(ship_rect):
-    #global ship_rect
+def create_bullet():
+    global ship_rect
     global bullets
     bullet_rect = pygame.rect.Rect(0, 0, 500, 10)
     bullet_rect.midbottom = ship_rect.midtop
     bullets.append(bullet_rect)
 
-def handle_event(ship_rect):
-    #global ship_rect
+def handle_event():
+    global ship_rect
     global bullets
     global left_pressed, right_pressed
     for event in pygame.event.get():
@@ -66,7 +45,7 @@ def handle_event(ship_rect):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if len(bullets) < 5:
-                    create_bullet(ship_rect)
+                    create_bullet()
             elif event.key == pygame.K_q:
                 pygame.quit()
                 raise SystemExit
@@ -87,10 +66,9 @@ def handle_event(ship_rect):
                 left_pressed = False
     #return left_pressed,right_pressed
 
-def update_object(screen_surf, ship_rect, aliens):
-    #global screen_surf
-    #global ship_rect
-    global bullets, alien_img
+def update_object(screen_surf):
+    global ship_rect
+    global bullets, aliens, alien_img
     global left_pressed, right_pressed
     global alien_x_direction, alien_x_direction_changed
     if right_pressed:
@@ -99,7 +77,7 @@ def update_object(screen_surf, ship_rect, aliens):
             ship_rect.x = ship_rect.x + 10
         #if alien_rect.x < screen_rect.width - alien_rect.width:
         #    alien_rect.x = alien_rect.x + 20
-    
+   
     if left_pressed:
         if 0< ship_rect.x:
             ship_rect.x = ship_rect.x - 10
@@ -125,27 +103,26 @@ def update_object(screen_surf, ship_rect, aliens):
                 alien.y += alien_img.get_rect().height
 
     alien_x_direction_changed = False
-    
+   
     if bullets:
         screen_rect = screen_surf.get_rect()
-        
+       
         for bullet in bullets:
             if bullet.y < 0:
                 bullets.remove(bullet)
-        
+       
         for bullet in bullets:
             bullet.y = bullet.y - 10
-    
+   
     for alien in aliens:
         for bullet in bullets:
             if pygame.rect.Rect.colliderect(alien, bullet):
                 aliens.remove(alien)
                 bullets.remove(bullet)
 
-def render_object(screen_surf, ship_rect, aliens):
-    #global screen_surf
-    global ship_img
-    global bullets, alien_img
+def render_object(screen_surf):
+    global ship_img, ship_rect
+    global aliens, bullets, alien_img
     screen_surf.fill('white')  # Fill the display with a solid color
 
     # Render the graphics here.
@@ -157,4 +134,38 @@ def render_object(screen_surf, ship_rect, aliens):
     if bullets:
         for bullet in bullets:
             pygame.draw.rect(screen_surf, 'red', bullet)
-            
+           
+#game_over_msg = pygame.font.Font(None, 64)
+# screen_surf = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+screen_surf = init()
+ship_img = pygame.image.load('0520/images/ship.bmp')
+alien_img = pygame.image.load('0520/images/alien.bmp')
+ship_rect = create_ship(screen_surf)  
+aliens = create_aliens()
+
+bullet_rect = None
+bullets = []
+
+clock = pygame.time.Clock()
+
+left_pressed = False
+right_pressed = False
+alien_x_direction = 1 # False: -1, 1: right
+alien_x_direction_changed = False
+is_running = True
+
+
+while True:
+    # Process player inputs.
+    handle_event()
+    update_object(screen_surf)
+    render_object(screen_surf)
+    pygame.display.flip()  # Refresh on-screen display
+    clock.tick(60)         # wait until next frame (at 60 FPS)
+   
+    # if len(aliens) == 0:
+    #     print('Game Over!')
+    #     is_running = False
+       
+    #game_over_msg.render('Game Over!', True, (0, 0, 0))
