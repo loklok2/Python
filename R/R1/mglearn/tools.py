@@ -54,11 +54,19 @@ def visualize_coefficients(coefficients, feature_names, n_top_features=25):
     plt.ylabel("계수 크기")
     plt.xlabel("특성")
 
-
+    
 def heatmap(values, xlabel, ylabel, xticklabels, yticklabels, cmap=None,
             vmin=None, vmax=None, ax=None, fmt="%0.2f"):
     if ax is None:
         ax = plt.gca()
+    
+    print(f"Input values shape: {np.shape(values)}")
+    
+    # Ensure values is a 2D numpy array
+    values = np.asarray(values)
+    if values.ndim == 1:
+        values = values.reshape(-1, 1)
+    
     # plot the mean cross-validation scores
     img = ax.pcolor(values, cmap=cmap, vmin=vmin, vmax=vmax)
     img.update_scalarmappable()
@@ -70,15 +78,56 @@ def heatmap(values, xlabel, ylabel, xticklabels, yticklabels, cmap=None,
     ax.set_yticklabels(yticklabels)
     ax.set_aspect(1)
 
-    for p, color, value in zip(img.get_paths(), img.get_facecolors(),
-                               img.get_array()):
-        x, y = p.vertices[:-2, :].mean(0)
-        if np.mean(color[:3]) > 0.5:
-            c = 'k'
-        else:
-            c = 'w'
-        ax.text(x, y, fmt % value, color=c, ha="center", va="center")
+    array_data = img.get_array()
+    print(f"Array data shape: {np.shape(array_data)}")
+
+    for i in range(values.shape[0]):
+        for j in range(values.shape[1]):
+            value = values[i, j]
+            color = img.get_facecolors()[i * values.shape[1] + j]
+            
+            if np.mean(color[:3]) > 0.5:
+                text_color = 'black'
+            else:
+                text_color = 'white'
+            
+            if np.ma.is_masked(value):
+                text_value = ""
+            elif np.isscalar(value):
+                text_value = fmt % value
+            else:
+                print(f"Non-scalar value encountered: {value}")
+                text_value = fmt % np.mean(value)  # Use mean for non-scalar values
+            
+            ax.text(j + 0.5, i + 0.5, text_value, 
+                    ha="center", va="center", color=text_color)
+    
     return img
+
+# def heatmap(values, xlabel, ylabel, xticklabels, yticklabels, cmap=None,
+#             vmin=None, vmax=None, ax=None, fmt="%0.2f"):
+#     if ax is None:
+#         ax = plt.gca()
+#     # plot the mean cross-validation scores
+#     img = ax.pcolor(values, cmap=cmap, vmin=vmin, vmax=vmax)
+#     img.update_scalarmappable()
+#     ax.set_xlabel(xlabel)
+#     ax.set_ylabel(ylabel)
+#     ax.set_xticks(np.arange(len(xticklabels)) + .5)
+#     ax.set_yticks(np.arange(len(yticklabels)) + .5)
+#     ax.set_xticklabels(xticklabels)
+#     ax.set_yticklabels(yticklabels)
+#     ax.set_aspect(1)
+
+#     for p, color, value in zip(img.get_paths(), img.get_facecolors(),
+#                                img.get_array()):
+#         x, y = p.vertices[:-2, :].mean(0)
+#         if np.mean(color[:3]) > 0.5:
+#             c = 'k'
+#         else:
+#             c = 'w'
+#         ax.text(x, y, fmt % value, color=c, ha="center", va="center")
+#     return img
 
 
 def make_handcrafted_dataset():
