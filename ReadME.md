@@ -11,7 +11,7 @@
 - 예제의 경우 (preamble.py에 추가, !!plt 밑에!!) 기존의 한국어 설정 주석처리
 - 사용시 import koreanize_matplotlib 하면 깨끗하게 사용됨
 
-# 그래프가 안나와요
+# 그래프가 안나와요!
 - pip install Graphviz
 - 별도로 graphviz.exe 설치필요
 - https://www.graphviz.org/download/
